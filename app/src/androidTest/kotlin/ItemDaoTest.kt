@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.Assert.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ItemDaoTest {
@@ -60,6 +61,20 @@ class ItemDaoTest {
         val allItems = itemDao.getAllItems().first()
         assertEquals(allItems[0], item1)
         assertEquals(allItems[1], item2)
+    }
+
+    // Test - delete items
+    @Test
+    @Throws(Exception::class)
+    fun daoDeleteItems_deletesAllItemsFromDB() = runBlocking {
+        // Add 2 items to the database and then delete them
+        addTwoItemsToDb()
+        itemDao.delete(item1)
+        itemDao.delete(item2)
+
+        // Get the entities from the database and check if the list is empty
+        val allItems = itemDao.getAllItems().first()
+        assertTrue(allItems.isEmpty())
     }
 
     @Test

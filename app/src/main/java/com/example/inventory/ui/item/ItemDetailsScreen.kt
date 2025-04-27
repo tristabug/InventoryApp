@@ -61,6 +61,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.ui.AppViewModelProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 object ItemDetailsDestination : NavigationDestination {
     override val route = "item_details"
@@ -104,7 +105,12 @@ fun ItemDetailsScreen(
         ItemDetailsBody(
             itemDetailsUiState = uiState.value,
             onSellItem = { viewModel.reduceQuantityByOne() },
-            onDelete = { },
+            onDelete = {
+                coroutineScope.launch {
+                    viewModel.deleteItem()
+                    navigateBack()
+                }
+            },
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -116,6 +122,7 @@ fun ItemDetailsScreen(
     }
 }
 
+// Display an alert dialog to confirm deletion of the item
 @Composable
 private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
