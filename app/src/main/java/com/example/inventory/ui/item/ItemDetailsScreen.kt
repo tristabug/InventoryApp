@@ -60,6 +60,7 @@ import com.example.inventory.ui.theme.InventoryTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.ui.AppViewModelProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 
 object ItemDetailsDestination : NavigationDestination {
     override val route = "item_details"
@@ -77,6 +78,7 @@ fun ItemDetailsScreen(
     viewModel: ItemDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState = viewModel.uiState.collectAsState() // collects the UI state
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             InventoryTopAppBar(
@@ -96,7 +98,8 @@ fun ItemDetailsScreen(
                     contentDescription = stringResource(R.string.edit_item_title),
                 )
             }
-        }, modifier = modifier
+        },
+        modifier = modifier,
     ) { innerPadding ->
         ItemDetailsBody(
             itemDetailsUiState = uiState.value,
@@ -134,7 +137,7 @@ private fun ItemDetailsBody(
             onClick = onSellItem,
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small,
-            enabled = true
+            enabled = !itemDetailsUiState.outOfStock
         ) {
             Text(stringResource(R.string.sell))
         }

@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import androidx.lifecycle.viewModelScope
 
 /**
  * ViewModel to retrieve, update and delete an item from the [ItemsRepository]'s data source.
@@ -43,7 +42,7 @@ class ItemDetailsViewModel(
         itemsRepository.getItemStream(itemId)
             .filterNotNull()
             .map {
-                ItemDetailsUiState(itemDetails = it.toItemDetails())
+                ItemDetailsUiState(outOfStock = it.quantity <= 0, itemDetails = it.toItemDetails())
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
