@@ -62,6 +62,21 @@ class ItemDaoTest {
         assertEquals(allItems[1], item2)
     }
 
+    @Test
+    @Throws(Exception::class)
+    fun daoUpdateItems_updatesItemsInDB() = runBlocking {
+        addTwoItemsToDb()
+
+        // Update two entities
+        itemDao.update(Item(1, "Apples", 15.0, 25))
+        itemDao.update(Item(2, "Bananas", 5.0, 50))
+
+        // Retrieve the entities
+        val allItems = itemDao.getAllItems().first()
+        assertEquals(allItems[0], Item(1, "Apples", 15.0, 25))
+        assertEquals(allItems[1], Item(2, "Bananas", 5.0, 50))
+    }
+
     // Utility functions to test with
     private suspend fun addOneItemToDb() {
         itemDao.insert(item1)
